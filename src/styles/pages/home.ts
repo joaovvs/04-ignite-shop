@@ -9,10 +9,10 @@ export const HomeContainer = styled('main', {
 })
 
 
-export const ProductContainer = styled('a', {
+export const ProductHomeContainer = styled('a', {
     background: "linear-gradient(180deg, #1EA483 0%, #7465D4 100%)",
     borderRadius: 8,
-    cursou: "pointer",
+    cursor: "pointer",
     position: "relative",
     overflow: "hidden",
 
@@ -47,6 +47,7 @@ export const ProductContainer = styled('a', {
 
         strong: {
             fontSize: "$lg",
+            color: "$gray100",
         },
 
         span: {
