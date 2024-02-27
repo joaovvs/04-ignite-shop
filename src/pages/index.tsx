@@ -12,6 +12,7 @@ import { HomeContainer, ProductHomeContainer } from "../styles/pages/home"
 import 'keen-slider/keen-slider.min.css'
 import Stripe from "stripe"
 import Link from "next/link"
+import { useEffect, useState } from "react"
 
 
 interface HomeProps {
@@ -20,11 +21,12 @@ interface HomeProps {
     name: string,
     imageUrl: string
     description: string,
-    price: number
+    price: string
   }[]
 }
 
 export default function Home({ products }: HomeProps) {
+  const [mounted, setMounted] = useState(false)
   const [sliderRef] = useKeenSlider({
     slides: {
       perView: 3,
@@ -32,13 +34,24 @@ export default function Home({ products }: HomeProps) {
     },
     
   })
+
+
+  useEffect(() => {
+    setMounted(true)
+  },[])
+
+
+  if(!mounted){
+    return null
+  }
+
   return (
     <HomeContainer ref={sliderRef} className="keen-slider">
       {products.map(product => {
        return ( 
-        <Link key={product.id} href={`/product/${product.id}`} >
+        <Link key={product.id} href={`/product/${product.id}`} prefetch={false} >
           <ProductHomeContainer className="keen-slider__slide"> 
-            <Image src={product.imageUrl} alt="" width={520} height={480}/>
+            <Image src={product.imageUrl} alt="" width={520} height={480} priority={true}/>
             <footer>
               <strong>{product.name}</strong>
               <span>{product.price}</span>
