@@ -13,6 +13,13 @@ export const SuccessContainer = styled('main', {
         color: '$gray100',
     },
 
+    div: {
+        display: 'flex',
+        width: '100%',
+        flexDirection: 'row',
+        justifyContent: 'center',
+    },
+
     p: {
         fontSize: '$xl',
         color: '$gray300',
@@ -40,17 +47,19 @@ export const SuccessContainer = styled('main', {
 })
 export const ImageContainer = styled('div', {
     width: '100%',
-    maxWidth: 130,
-    height: 145,
+    maxWidth: 140,
+    height: 140,
 
     background: "linear-gradient(180deg, #1EA483 0%, #7465D4 100%)",
-    borderRadius: 8,
+    borderRadius: '50%',
     padding: '0.25rem',
     marginTop: '4rem',
 
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+
+    marginLeft: -52,
 
     img: {
         objectFit: 'cover',

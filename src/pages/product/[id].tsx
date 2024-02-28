@@ -4,69 +4,52 @@ import {
   ProductContainer,
   ProductDetails,
 } from "@/src/styles/pages/product";
-import axios from "axios";
 import Head from "next/head";
 import Image from "next/image";
-import { useRouter } from "next/router";
+
 import { GetStaticPaths, GetStaticProps } from "next/types";
-import { useState } from "react";
+
 import Stripe from "stripe";
+import { useShoppingCart } from "use-shopping-cart";
 
 interface ProductProps {
   product: {
     id: string;
     name: string;
-    imageUrl: string;
+    image: string;
+    currency: string;
     description: string;
-    price: string;
-    defaultPriceId: string;
+    price: number;
+    price_id: string;
   };
 }
 
 export default function Product({ product }: ProductProps) {
-  const [isCreatingCheckoutSession, setIsCreatingCheckoutSession] =
-    useState(false);
+  const { addItem } = useShoppingCart()
 
-  async function handleBuyProduct() {
-    try {
-      setIsCreatingCheckoutSession(true);
-
-      const response = await axios.post("/api/checkout", {
-        priceId: product.defaultPriceId,
-      });
-
-      const { checkoutUrl } = response.data;
-
-      window.location.href = checkoutUrl;
-    } catch (error) {
-      setIsCreatingCheckoutSession(false);
-
-      alert("Falha ao redirecionar ao checkout!");
-    }
-  }
 
   return (
     <>
       <Head>
-        <title>{product.name} | Ignite Shop</title>
+        <title>{`${product.name} | Ignite Shop`}</title>
       </Head>
       <ProductContainer>
         <ImageContainer>
-          <Image src={product.imageUrl} alt="" width={520} height={480} />
+          <Image src={product.image} alt="" width={520} height={480} />
         </ImageContainer>
 
         <ProductDetails>
           <h1>{product.name}</h1>
-          <span>{product.price}</span>
+          <span>{(product.price / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL'})}</span>
 
           <p>{product.description}</p>
 
           <button
             type="button"
-            onClick={handleBuyProduct}
-            disabled={isCreatingCheckoutSession}
+            onClick={() => addItem(product)}
+
           >
-            Comprar agora
+            Colocar na sacola
           </button>
         </ProductDetails>
       </ProductContainer>
@@ -97,13 +80,11 @@ export const getStaticProps: GetStaticProps<any, { id: string }> = async ({
       product: {
         id: product.id,
         name: product.name,
-        imageUrl: product.images[0],
+        image: product.images[0],
+        currency: 'BRL',
         description: product.description,
-        price: new Intl.NumberFormat("pt-BR", {
-          style: "currency",
-          currency: "BRL",
-        }).format(price.unit_amount ? price.unit_amount / 100 : 0),
-        defaultPriceId: price.id,
+        price: price.unit_amount ? price.unit_amount : 0,
+        price_id: price.id,
       },
     },
     revalidate: 60 * 60 * 1, // 1 hours
